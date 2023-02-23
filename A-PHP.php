@@ -188,16 +188,16 @@ echo $_SERVER['SERVER_SOFTWARE']; //MUESTRA EL SOFTWARE QUE LEVANTA EL SERVIDOR
 echo $_SERVER['HTTP_USER_AGENT']; //MUESTRA EL NAVEGADOR WEB QUE ACCEDE A LA PAG
 echo $_SERVER['HTTP_USER_AGENT']; //MUESTRA EL NAVEGADOR WEB QUE ACCEDE A LA PAG
 // -----------------------------------------------------------------------------------------------------------
-// SESIONES 
+// SESIONES (similares a cookies, sirven para iniciar sesion, datos encriptados)
 // -----------------------------------------------------------------------------------------------------------
-session_start();  //Las sesiones se puede iniciar manualmente usando la función
+session_start();  //Las sesiones se pueden iniciar usando la función
 $_SESSION['Usuario'] = "Juan Cruz"; // creando una session
 session_destroy(); //cierro la sesion
 // -----------------------------------------------------------------------------------------------------------
 // COOKIES (fichero que se almacena en el equipo del usuario, guardando datos o rastrear info) 
 //         https://platzi.com/clases/3144-php-cookies-sesiones/49694-trabajando-con-cookies/
 // -----------------------------------------------------------------------------------------------------------
-setcookie(name:'ejemplo',value:'valor',expires_or_options:0, path:'/',httponly:true); //crea cookie 
+setcookie(name:'ejemplo',value:'valor',expires_or_options:0, path:'/',httponly:true); //crea cookie (path:inidica donde se va subir la cookie)
 setcookie("un año", "cookie de un año", time() + (60 * 60 * 24 * 365)); //cookie con expiración temporal (1 año)
 echo $_COOKIE['micookie']; // para verlas, consola, application, cookies
 unset($_COOKIE['micookie']);               //borrar cookie paso 1
