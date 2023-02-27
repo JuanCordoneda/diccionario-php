@@ -6,6 +6,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // -----------------------------------------------------------------------------------------------------------
+// INCLUDE
+// -----------------------------------------------------------------------------------------------------------
+include 'archivo.php'; //si no anda, emite warning
+include_once 'archivo.php'; //solo se puede aplicar una vez
+require 'archivo.php'; //si no anda, para la ejecucion de la página
+require_once 'archivo.php'; //el más estricto. EL MEJOR PARA USAR
+// -----------------------------------------------------------------------------------------------------------
 // DEBUGEAR
 // -----------------------------------------------------------------------------------------------------------
 echo "<pre>" . var_dump($array) . "</pre>"; // PARA DEBUGEAR, VER CONTENIDO Y UBICACION DE UN ARRAY
@@ -237,13 +244,6 @@ do {
     $contador++;
 } while ($edad >= 18 && $contador <= 10);
 // -----------------------------------------------------------------------------------------------------------
-// INCLUDE
-// -----------------------------------------------------------------------------------------------------------
-include 'archivo.php'; //esta fucion lee el contendio del archivo y la imprime
-include_once 'archivo.php'; //solo se puede aplicar una vez
-require 'archivo.php'; //si se carga mal, para la ejecucion de la página
-require_once 'archivo.php'; //el más estricto. EL MEJOR PARA USAR
-// -----------------------------------------------------------------------------------------------------------
 // VARIABLES DE SERVIDOR
 // -----------------------------------------------------------------------------------------------------------
 echo $_SERVER['SERVER_ADDR']; //MUESTRA LA DIRECCION IP DEL ORDENADOR CONTENEDOR
@@ -313,7 +313,7 @@ class Coche
     }
     public function __toString()  //se ejecuta al instanciar el objeto
     {
-        return "hola, {$this->nombre}";
+        return "hola, {$this->modelo}";
     }
 
     public function getColor() //metodos (por defecto public)
@@ -418,7 +418,8 @@ class Intel extends Ordenador
     }
 }
 // -----------------------------------------------------------------------------------------------------------
-// TRAIT (funciones universales que sirven para todas las clases)
+// TRAIT (clases con siertos metodos que podemos utilzar en otras clases)(plantilla de clases)
+//        https://platzi.com/clases/3144-php-cookies-sesiones/49711-traits/
 // -----------------------------------------------------------------------------------------------------------
 trait Utilidades
 {
@@ -435,6 +436,38 @@ class Coches
 $coche3 = new Coches();
 $coche3->nombre = 'Ferrari';
 $coche3->MostrarNombre();
+// -----------------------------------------------------------------------------------------------------------
+// BASE DE DATOS
+// -----------------------------------------------------------------------------------------------------------
+$enlace = mysqli_connect("127.0.0.1", "mi_usuario", "mi_contraseña", "mi_bd");
+$produccion = pg_connect("host=192.168.0.215 port=5432 password=pussycat user=gcagnola dbname=equipamientos");
+if (mysqli_connect_errno()) {   //CHECKEADOR
+    echo "ERROR DE CONEXION";
+} else {
+    echo "CONEXION REALIZADA";
+}
+// MY SQL
+// $query = mysqli_query($local, "SELECT * FROM TABLA"); //EJECUCION DE QUERY
+// $resultado = mysqli_fetch_assoc($query); //DEVUELVE 1 REGISTRO (OPCION 1)
+// while ($row = mysqli_fetch_assoc($query)) {  //ITERA Y DEVUELVE TODOS LOS REGISTROS
+//     echo $row['descripcion'];
+//     echo $row['nombre'];
+// }
+// $insert = mysqli_query($local, "INSERT INTO tabla(a,b,c,d)"); //EJECUCION DE QUERY
+
+// PG ADMIN
+$query = pg_query($local, "SELECT * FROM TABLA"); //EJECUCION DE QUERY
+$resultado = pg_fetch_array($query); //DEVUELVE 1 REGISTRO (OPCION 1)
+while ($row = pg_fetch_array($query)) {  //ITERA Y DEVUELVE TODOS LOS REGISTROS
+    echo $row['descripcion'];
+    echo $row['nombre'];
+}
+// validador
+if (pg_num_rows($query) > 0) {  //muestra la cantidad de espacios que tiene ocupados una query
+    echo "DATOS INTRODUCIDOS CORRECTAMENTE";
+} else {
+    echo "ERROR " . mysqli_error($conexion); //muestra el error
+}
 // -----------------------------------------------------------------------------------------------------------
 // INCLUDE AUTOLOAD
 // -----------------------------------------------------------------------------------------------------------
@@ -485,8 +518,8 @@ function password($value)
 
 function test_password()
 {
-    $password = Validate::password('1234567');
-    $this->assertTrue($password);
+    // $password = Validate::password('1234567');
+    // $this->assertTrue($password);
 } 
 // -----------------------------------------------------------------------------------------------------------
 // FORMULARIO GET Y POST
@@ -543,39 +576,6 @@ if ($tipo = "image/jpg" || $tipo = "image/jpeg" || $tipo = "image/png" || $tipo 
 }
 
 // -----------------------------------------------------------------------------------------------------------
-// BASE DE DATOS
-// -----------------------------------------------------------------------------------------------------------
-$enlace = mysqli_connect("127.0.0.1", "mi_usuario", "mi_contraseña", "mi_bd");
-$produccion = pg_connect("host=192.168.0.215 port=5432 password=pussycat user=gcagnola dbname=equipamientos");
-if (mysqli_connect_errno()) {   //CHECKEADOR
-    echo "ERROR DE CONEXION";
-} else {
-    echo "CONEXION REALIZADA";
-}
-// MY SQL
-// $query = mysqli_query($local, "SELECT * FROM TABLA"); //EJECUCION DE QUERY
-// $resultado = mysqli_fetch_assoc($query); //DEVUELVE 1 REGISTRO (OPCION 1)
-// while ($row = mysqli_fetch_assoc($query)) {  //ITERA Y DEVUELVE TODOS LOS REGISTROS
-//     echo $row['descripcion'];
-//     echo $row['nombre'];
-// }
-// $insert = mysqli_query($local, "INSERT INTO tabla(a,b,c,d)"); //EJECUCION DE QUERY
-
-// PG ADMIN
-$query = pg_query($local, "SELECT * FROM TABLA"); //EJECUCION DE QUERY
-$resultado = pg_fetch_array($query); //DEVUELVE 1 REGISTRO (OPCION 1)
-while ($row = pg_fetch_array($query)) {  //ITERA Y DEVUELVE TODOS LOS REGISTROS
-    echo $row['descripcion'];
-    echo $row['nombre'];
-}
-// validador
-if (pg_num_rows($query) > 0) {  //muestra la cantidad de espacios que tiene ocupados una query
-    echo "DATOS INTRODUCIDOS CORRECTAMENTE";
-} else {
-    echo "ERROR " . mysqli_error($conexion); //muestra el error
-}
-
-// -----------------------------------------------------------------------------------------------------------
 // THICKBOX (VENTANA EMERGENTE)
 // -----------------------------------------------------------------------------------------------------------
 echo "<td class='opbutton1'><a href='precintos_rotos_listado.php?height=500&width=700&nId_Equipo=" . trim($aRowER["id_equipo"]) . "&cEquipo=" . trim($aRowER["nombre"]) . "'title='' class='thickbox'>Mostrar</a></td>\n";
@@ -590,8 +590,27 @@ echo "<td class='opbutton1'><a href='precintos_rotos_listado.php?height=500&widt
         window.location = "graba_metros.php?superficie=" + superficie;
     }
 </script>
+// -----------------------------------------------------------------------------------------------------------
+// FRONT CONTROLLER //https://platzi.com/clases/3144-php-cookies-sesiones/49709-front-controller/
+// -----------------------------------------------------------------------------------------------------------
+<?php
+$page = $_GET['page'] ?? null;
 
-
+switch ($page) {
+    case 'home':
+        require("pages/home.php");
+        break;
+    case 'contact':
+        require("pages/contact.php");
+        break;
+    case 'services':
+        require("pages/services.php");
+        break;
+    deafult:
+        require("pages/404.php");
+        break;
+}
+?>
 <!-- --------------------------------------------------------------------------------------------------------------------- -->
 <!-- SELECT PHP -->
 <!-- --------------------------------------------------------------------------------------------------------------------- -->
@@ -673,3 +692,15 @@ $dFecha_Pago = trim($_POST["dFecha_Pago"]);
 $pTipo_Pago = trim($_POST["pTipo_Pago"]);
 $cImporte = trim($_POST["nImporte"]);
 ?>
+
+// -----------------------------------------------------------------------------------------------------------
+//El archivo .htaccess //https://platzi.com/clases/3144-php-cookies-sesiones/49710-el-archivo-htaccess/
+// -----------------------------------------------------------------------------------------------------------
+<VirtualHost *:80>
+    ServerName www.cursoplatzi.test
+    DocumentRoot /srv/www/htdocs/platzi-php/htaccess
+    <Directory "/srv/www/htdocs/platzi-php/htaccess">
+        Options FollowSymLinks
+        AllowOverride All
+    </Directory>
+</VirtualHost>
