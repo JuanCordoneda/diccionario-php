@@ -101,19 +101,32 @@ for ($x = 0; $x < count($lista); $x++) {    //iterador
 // fecha
 // -----------------------------------------------------------------------------------------------------------
 echo date('d-m-Y');  //GENERA TODO TIPO DE FECHA Y HORARIO
-$date= date_create(); //fecha actual
+$date= date_create(); //crea un obejto de tipo datetime, para echo hay que formatear
 $intervalo_de_tiempo= date_interval_create_from_date_string('5 days');
 date_add($date,$intervalo_de_tiempo); //agrega tiempo
-$date=date_format($date,'Y-m-d'); //formatea 
+$date=date_format($date,'Y/m/d H:i:s'); //formatea 
+$fecha_en_formato_unix=strtotime($date); //formato unix (en segundos)
 echo time(); //muestra codigo de hora que se actualiza todo el tiempo
+date_default_timezone_get('América/Argentina/Buenos Aires'); //zona horaria
 // -----------------------------------------------------------------------------------------------------------
-// fecha con POOS
+// fecha con POO
 // -----------------------------------------------------------------------------------------------------------
 $intervalo_de_tiempo=DateInterval::createFromDateString('5 days');
-$date=new DateTime();
-$date->add($intervalo_de_tiempo);
-$date->format('Y-m-d');
-
+$date=new DateTime(); //fecha actual
+$date2=new DateTime('2021/04/04'); //fecha configurada
+$date2=DateTime::createFromFormat("l j F Y", "Sunday 17 April 2022"); //fecha desde un formato dado
+$date->add($intervalo_de_tiempo); //agrega tiempo
+$date->modify("+1 day +2 months"); //Modificar una fecha
+$intervalo_diferencia_de_tiempo=$date2->diff($date); //$date2 - $date (OBJETO INTERVAL)
+$date->format('Y-m-d'); //formatea 
+$intervalo_diferencia_de_tiempo->format("%y años, %m meses, %d días");; //$date2 - $date (OBJETO INTERVAL)
+$date_inmutable= new DateTimeImmutable();//fechas inmutables (no se modifican)
+// -----------------------------------------------------------------------------------------------------------
+// fechas en funciones (estas se encuentran en https://platzi.com/clases/3144-php-cookies-sesiones/49705-expande-tu-arsenal-de-funciones-para-fechas/ )
+// -----------------------------------------------------------------------------------------------------------
+//echo get_full_date('2022-04-25 16:35:45');//Lunes 25 de Abril de 2022 a las 4:35 pm
+//echo get_time_from_timestamp('24:32:45');//6:32 pm
+//echo translate_time('1 dia', false)//1 day
 // -----------------------------------------------------------------------------------------------------------
 // matematica
 // -----------------------------------------------------------------------------------------------------------
