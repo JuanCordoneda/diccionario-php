@@ -101,7 +101,19 @@ for ($x = 0; $x < count($lista); $x++) {    //iterador
 // fecha
 // -----------------------------------------------------------------------------------------------------------
 echo date('d-m-Y');  //GENERA TODO TIPO DE FECHA Y HORARIO
-echo time(); //muestra codgio de hora que se actualiza todo el tiempo
+$date= date_create(); //fecha actual
+$intervalo_de_tiempo= date_interval_create_from_date_string('5 days');
+date_add($date,$intervalo_de_tiempo); //agrega tiempo
+$date=date_format($date,'Y-m-d'); //formatea 
+echo time(); //muestra codigo de hora que se actualiza todo el tiempo
+// -----------------------------------------------------------------------------------------------------------
+// fecha con POOS
+// -----------------------------------------------------------------------------------------------------------
+$intervalo_de_tiempo=DateInterval::createFromDateString('5 days');
+$date=new DateTime();
+$date->add($intervalo_de_tiempo);
+$date->format('Y-m-d');
+
 // -----------------------------------------------------------------------------------------------------------
 // matematica
 // -----------------------------------------------------------------------------------------------------------
@@ -125,6 +137,7 @@ $year = 2021;
 --$year; //1-$year;
 // -----------------------------------------------------------------------------------------------------------
 // EXCEPCIONES (capturar excepciones en código susceptible a error)
+//              https://platzi.com/clases/3144-php-cookies-sesiones/49699-revisando-los-metodos-de-las-excepciones/
 // -----------------------------------------------------------------------------------------------------------
 try {
     if (isset($_GET['ID'])) {
@@ -136,6 +149,45 @@ try {
     echo 'Ha habido un error: ' . $e->getMessage(); //lanza 'Error de lógica'
 } finally {  //cuando se termine de ejecutar todo...
     echo "todo correcto";
+}
+$e->__construct(); // Constructor de la excepción
+$e->getMessage(); // Obtiene el mensaje de Excepción
+$e->getPrevious(); // Devuelve la excepción anterior
+$e->getCode(); // Obtiene el código de una excepción
+$e->getFile(); // Obtiene el fichero en el que se creó la excepción
+$e->getLine(); // Obtiene la línea en el que se creó la excepción
+$e->getTrace(); // Obtiene la traza de la pila
+$e->getTraceAsString(); // Obtiene la traza de la pila como una cadena de caracteres
+$e->__toString(); // Representación de la excepción en formato cadena
+// -----------------------------------------------------------------------------------------------------------
+// EXCEPCIONES PERSONALIZADAS EN CLASES https://platzi.com/clases/3144-php-cookies-sesiones/49700-crea-tus-propias-excepciones/
+// -----------------------------------------------------------------------------------------------------------
+class GatoException extends Exception{
+    public function getMeow(){
+        return "Meow";
+    }
+}
+
+class ConejoException extends Exception{
+    public function getRabbit(){
+        return "Conejo";
+    }
+}
+
+try {
+    $exception = readline("Excepcion a lanzar: ");
+    if ($exception == "conejo") 
+        throw new GatoException("Meow");
+     else 
+        throw new ConejoException("Conejo");
+} catch (GatoException $e) {
+   echo $e->getMessage() . "\n";
+   echo $e->getMeow();
+}catch (ConejoException $e) {
+   echo $e->getMessage() . "\n";
+   echo $e->getRabbit();
+}finally{
+    echo "Se ha lanzado la excepcion";
 }
 // -----------------------------------------------------------------------------------------------------------
 // FUNCIONES
