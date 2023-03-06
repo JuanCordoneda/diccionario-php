@@ -6,6 +6,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // -----------------------------------------------------------------------------------------------------------
+// HEADER (envia informacion extra en encabezado)(redirecciona, autenticaciones, cookies, cache)(viaja por detras del servidor)
+//         https://platzi.com/clases/3151-php-entornos-funciones/49809-redirecciones/
+// -----------------------------------------------------------------------------------------------------------
+header('location:index.php'); //redirecciona a index.php
+exit; //PONER ESTO AL FINAL PARA SEGURIDAD
+header("Refresh: 5; URL=index.php"); //Refrescar
+// -----------------------------------------------------------------------------------------------------------
 // INCLUDE
 // -----------------------------------------------------------------------------------------------------------
 include 'archivo.php'; //si no anda, emite warning
@@ -69,11 +76,11 @@ ksort($array); //Ordena un array por clave.
 krsort($array); //Ordena un array por clave en orden inverso.
 array_reverse($array); //Invierte orden de array numérico
 array_flip($array); //Intercambia todas las claves de un array con sus valores asociados.
-array_diff($array1,$array2); //compara 2 arrays y muestra las diferencias existentes entre los 2.
-array_diff_assoc($array1,$array2); //compara 2 arrays y muestra las diferencias existentes entre los 2 con un chequeo adicional de índices
-array_merge($array1,$array2); //une, junta los arrays sin indice
-array_merge_recursive($array1,$array2); //une, junta 2 arrays con indice en uno mismo
-array_combine($indice,$key); //une, junta 2 arrays en un array bidimiencional array1=indice array2=key.
+array_diff($array1, $array2); //compara 2 arrays y muestra las diferencias existentes entre los 2.
+array_diff_assoc($array1, $array2); //compara 2 arrays y muestra las diferencias existentes entre los 2 con un chequeo adicional de índices
+array_merge($array1, $array2); //une, junta los arrays sin indice
+array_merge_recursive($array1, $array2); //une, junta 2 arrays con indice en uno mismo
+array_combine($indice, $key); //une, junta 2 arrays en un array bidimiencional array1=indice array2=key.
 
 $array = array("Batman", "Superman", "HULK");
 $array2 = ["Batman", "Superman", "HULK"];
@@ -104,30 +111,41 @@ echo $ArrayMultiDimensional[1]['nombre']; //Juan Cruz
 for ($x = 0; $x < count($lista); $x++) {    //iterador
     echo $lista[$x] . "<br>";
 }
+
+foreach ($lista as &$value) {
+    $value = $value * 2;
+}
+
+$i = 0;
+while($i < count($users)) //iterador
+{
+	echo $users[$i]."\n";
+	$i++;
+}
 // -----------------------------------------------------------------------------------------------------------
 // fecha
 // -----------------------------------------------------------------------------------------------------------
 echo date('d-m-Y');  //GENERA TODO TIPO DE FECHA Y HORARIO
-$date= date_create(); //crea un obejto de tipo datetime, para echo hay que formatear
-$intervalo_de_tiempo= date_interval_create_from_date_string('5 days');
-date_add($date,$intervalo_de_tiempo); //agrega tiempo
-$date=date_format($date,'Y/m/d H:i:s'); //formatea 
-$fecha_en_formato_unix=strtotime($date); //formato unix (en segundos)
+$date = date_create(); //crea un obejto de tipo datetime, para echo hay que formatear
+$intervalo_de_tiempo = date_interval_create_from_date_string('5 days');
+date_add($date, $intervalo_de_tiempo); //agrega tiempo
+$date = date_format($date, 'Y/m/d H:i:s'); //formatea 
+$fecha_en_formato_unix = strtotime($date); //formato unix (en segundos)
 echo time(); //muestra codigo de hora que se actualiza todo el tiempo
 date_default_timezone_get('América/Argentina/Buenos Aires'); //zona horaria
 // -----------------------------------------------------------------------------------------------------------
 // fecha con POO
 // -----------------------------------------------------------------------------------------------------------
-$intervalo_de_tiempo=DateInterval::createFromDateString('5 days');
-$date=new DateTime(); //fecha actual
-$date2=new DateTime('2021/04/04'); //fecha configurada
-$date2=DateTime::createFromFormat("l j F Y", "Sunday 17 April 2022"); //fecha desde un formato dado
+$intervalo_de_tiempo = DateInterval::createFromDateString('5 days');
+$date = new DateTime(); //fecha actual
+$date2 = new DateTime('2021/04/04'); //fecha configurada
+$date2 = DateTime::createFromFormat("l j F Y", "Sunday 17 April 2022"); //fecha desde un formato dado
 $date->add($intervalo_de_tiempo); //agrega tiempo
 $date->modify("+1 day +2 months"); //Modificar una fecha
-$intervalo_diferencia_de_tiempo=$date2->diff($date); //$date2 - $date (OBJETO INTERVAL)
+$intervalo_diferencia_de_tiempo = $date2->diff($date); //$date2 - $date (OBJETO INTERVAL)
 $date->format('Y-m-d'); //formatea 
 $intervalo_diferencia_de_tiempo->format("%y años, %m meses, %d días");; //$date2 - $date (OBJETO INTERVAL)
-$date_inmutable= new DateTimeImmutable();//fechas inmutables (no se modifican)
+$date_inmutable = new DateTimeImmutable(); //fechas inmutables (no se modifican)
 // -----------------------------------------------------------------------------------------------------------
 // fechas en funciones (estas se encuentran en https://platzi.com/clases/3144-php-cookies-sesiones/49705-expande-tu-arsenal-de-funciones-para-fechas/ )
 // -----------------------------------------------------------------------------------------------------------
@@ -143,12 +161,41 @@ echo round(7.899, 2); //redondea el 2 es la cantidad de decimales a poner
 $num_length = strlen((string)$num); //lenght de numeros
 // -----------------------------------------------------------------------------------------------------------
 // CONSTANTES  (contenedor de informacion que no pueden cambiar)
+//              https://platzi.com/clases/3151-php-entornos-funciones/49808-variables-superglobales/
 // -----------------------------------------------------------------------------------------------------------
-define('nombre', 'Juan Cruz');
+define('nombre', 'Juan Cruz'); //FORMA 1 DE CONSTANTE
+const PI = 3.1416;            //FORMA 2 DE CONSTANTE
 echo nombre; //sin $
+echo $GLOBALS; //MUESTRA TODAS LAS VARIABLES GLOBALES Y CREADAS
 echo __LINE__;  //numero de la linea en la que estoy
 echo __FILE__; //ubic y nombre del archivo
 echo __FUNCTION__; //se muestra si esta dentro de una funcion e imprime la funcion;
+echo $_ENV; //Entorno donde se ejecuta php
+echo $_REQUEST; //contiene todos los $_GET, $_POST and $_COOKIE.
+// -----------------------------------------------------------------------------------------------------------
+// VARIABLES DE SERVIDOR
+// -----------------------------------------------------------------------------------------------------------
+echo $_SERVER['SERVER_ADDR']; //MUESTRA LA DIRECCION IP DEL ORDENADOR CONTENEDOR
+echo $_SERVER['REMOTE_ADDR']; //MUESTRA LA IP DEL CLIENTE
+echo $_SERVER['SERVER_NAME']; //MUESTRA EL DOMINIO
+echo $_SERVER['SERVER_SOFTWARE']; //MUESTRA EL SOFTWARE QUE LEVANTA EL SERVIDOR
+echo $_SERVER['HTTP_USER_AGENT']; //MUESTRA EL NAVEGADOR WEB QUE ACCEDE A LA PAG
+echo $_SERVER['HTTP_USER_AGENT']; //MUESTRA EL NAVEGADOR WEB QUE ACCEDE A LA PAG
+// -----------------------------------------------------------------------------------------------------------
+// SESIONES (similares a cookies, sirven para iniciar sesion, datos encriptados)
+// -----------------------------------------------------------------------------------------------------------
+session_start();  //Las sesiones se pueden iniciar usando la función
+$_SESSION['Usuario'] = "Juan Cruz"; // creando una session
+session_destroy(); //cierro la sesion
+// -----------------------------------------------------------------------------------------------------------
+// COOKIES (fichero que se almacena en el equipo del usuario, guardando datos o rastrear info) 
+//         https://platzi.com/clases/3144-php-cookies-sesiones/49694-trabajando-con-cookies/
+// -----------------------------------------------------------------------------------------------------------
+setcookie(name: 'ejemplo', value: 'valor', expires_or_options: 0, path: '/', httponly: true); //crea cookie (path:inidica donde se va subir la cookie)
+setcookie("un año", "cookie de un año", time() + (60 * 60 * 24 * 365)); //cookie con expiración temporal (1 año)
+echo $_COOKIE['micookie']; // para verlas, consola, application, cookies
+unset($_COOKIE['micookie']);               //borrar cookie paso 1
+setcookie('micookie', '', time() - 100);  //borrar cookie paso 2 (caducarla)  
 // -----------------------------------------------------------------------------------------------------------
 // PRE-OPERADORES
 // -----------------------------------------------------------------------------------------------------------
@@ -182,45 +229,90 @@ $e->__toString(); // Representación de la excepción en formato cadena
 // -----------------------------------------------------------------------------------------------------------
 // EXCEPCIONES PERSONALIZADAS EN CLASES https://platzi.com/clases/3144-php-cookies-sesiones/49700-crea-tus-propias-excepciones/
 // -----------------------------------------------------------------------------------------------------------
-class GatoException extends Exception{
-    public function getMeow(){
+class GatoException extends Exception
+{
+    public function getMeow()
+    {
         return "Meow";
     }
 }
 
-class ConejoException extends Exception{
-    public function getRabbit(){
+class ConejoException extends Exception
+{
+    public function getRabbit()
+    {
         return "Conejo";
     }
 }
 
 try {
     $exception = readline("Excepcion a lanzar: ");
-    if ($exception == "conejo") 
+    if ($exception == "conejo")
         throw new GatoException("Meow");
-     else 
+    else
         throw new ConejoException("Conejo");
 } catch (GatoException $e) {
-   echo $e->getMessage() . "\n";
-   echo $e->getMeow();
-}catch (ConejoException $e) {
-   echo $e->getMessage() . "\n";
-   echo $e->getRabbit();
-}finally{
+    echo $e->getMessage() . "\n";
+    echo $e->getMeow();
+} catch (ConejoException $e) {
+    echo $e->getMessage() . "\n";
+    echo $e->getRabbit();
+} finally {
     echo "Se ha lanzado la excepcion";
 }
 // -----------------------------------------------------------------------------------------------------------
 // FUNCIONES
 // -----------------------------------------------------------------------------------------------------------
 $frase = "esta frase es global, pero no se ejecuta dentro de la funcion $name";
-function param($param1, $param2 = true)  //parametros opcionales
+function param(int $p1, bool $p2 = true, array $p3 = array(23, 32)):string
 {
     global $frase;  //la trae del global
     return 'AHORA SI:' . $frase;
 }
 $frase = param(".");   //'AHORA SI:' . $frase; 
 // -----------------------------------------------------------------------------------------------------------
-// SWITCH
+// FUNCIONES VARIABLES https://platzi.com/clases/3151-php-entornos-funciones/49758-funciones-variables/
+// -----------------------------------------------------------------------------------------------------------
+function suma($n1, $n2)
+{
+    return $n1() + $n2(); // getNumber2() + getNumber3()
+}
+function getNumber2()
+{
+    return 7;
+}
+function getNumber3()
+{
+    return 3;
+}
+suma('getNumber2', 'getNumber3');
+
+// -----------------------------------------------------------------------------------------------------------
+// FUNCIONES ANONIMAS (VARIABLES QUE REQUIEREN LOGICA)
+//                    https://platzi.com/clases/3151-php-entornos-funciones/49762-funciones-anonimas/
+// -----------------------------------------------------------------------------------------------------------
+$es = function ($name) { //funcion anonima
+    return "Hola, {$name}";
+};
+function saludar(Closure $funcion_anonima, $name) //Closure es un parametro que indica que sea una funcion
+{
+    return $funcion_anonima($name);
+}
+echo saludar($es, "Lynda");
+
+// -----------------------------------------------------------------------------------------------------------
+// FUNCIONES ARROW https://platzi.com/clases/3151-php-entornos-funciones/49760-arrow-functions/
+// -----------------------------------------------------------------------------------------------------------
+$cajero = 10;
+$add_cajero = fn($add) => $cajero + $add;
+echo $add_cajero(20);
+
+$where_am_i = "México";
+$change_where_am_i = fn(&$where_am_i) => $where_am_i = "Colombia";
+$change_where_am_i($where_am_i);
+echo $where_am_i; // Colombia
+// -----------------------------------------------------------------------------------------------------------
+// SWITCH  https://platzi.com/clases/3151-php-entornos-funciones/49810-match/
 // -----------------------------------------------------------------------------------------------------------
 $dia = 2;
 switch ($dia) {
@@ -235,6 +327,19 @@ switch ($dia) {
         break;
 }
 // -----------------------------------------------------------------------------------------------------------
+// MATCH (SIMILAR AL SWITCH) https://platzi.com/clases/3151-php-entornos-funciones/49810-match/
+// -----------------------------------------------------------------------------------------------------------
+function get_country_name_match($country)
+{
+    return match ($country) {
+        "MX" => "México",
+        "COL" => "Colombia",
+        "EUA" => "Estados Unidos Americanos",
+        default => "Lo siento, no conozco ese país"
+    };
+}
+echo get_country_name_match("LKASJDKLASDNLAS") . PHP_EOL;
+// -----------------------------------------------------------------------------------------------------------
 // DO WHILE (EJECUTA POR UNA VEZ UNA SENTENCIA DE CODIGO Y LUEGO ENTRA EN EL SICLO WHILE)
 // -----------------------------------------------------------------------------------------------------------
 $edad = 18;
@@ -243,30 +348,6 @@ do {
     echo "ejecución" . $contador;
     $contador++;
 } while ($edad >= 18 && $contador <= 10);
-// -----------------------------------------------------------------------------------------------------------
-// VARIABLES DE SERVIDOR
-// -----------------------------------------------------------------------------------------------------------
-echo $_SERVER['SERVER_ADDR']; //MUESTRA LA DIRECCION IP DEL ORDENADOR CONTENEDOR
-echo $_SERVER['REMOTE_ADDR']; //MUESTRA LA IP DEL CLIENTE
-echo $_SERVER['SERVER_NAME']; //MUESTRA EL DOMINIO
-echo $_SERVER['SERVER_SOFTWARE']; //MUESTRA EL SOFTWARE QUE LEVANTA EL SERVIDOR
-echo $_SERVER['HTTP_USER_AGENT']; //MUESTRA EL NAVEGADOR WEB QUE ACCEDE A LA PAG
-echo $_SERVER['HTTP_USER_AGENT']; //MUESTRA EL NAVEGADOR WEB QUE ACCEDE A LA PAG
-// -----------------------------------------------------------------------------------------------------------
-// SESIONES (similares a cookies, sirven para iniciar sesion, datos encriptados)
-// -----------------------------------------------------------------------------------------------------------
-session_start();  //Las sesiones se pueden iniciar usando la función
-$_SESSION['Usuario'] = "Juan Cruz"; // creando una session
-session_destroy(); //cierro la sesion
-// -----------------------------------------------------------------------------------------------------------
-// COOKIES (fichero que se almacena en el equipo del usuario, guardando datos o rastrear info) 
-//         https://platzi.com/clases/3144-php-cookies-sesiones/49694-trabajando-con-cookies/
-// -----------------------------------------------------------------------------------------------------------
-setcookie(name:'ejemplo',value:'valor',expires_or_options:0, path:'/',httponly:true); //crea cookie (path:inidica donde se va subir la cookie)
-setcookie("un año", "cookie de un año", time() + (60 * 60 * 24 * 365)); //cookie con expiración temporal (1 año)
-echo $_COOKIE['micookie']; // para verlas, consola, application, cookies
-unset($_COOKIE['micookie']);               //borrar cookie paso 1
-setcookie('micookie', '', time() - 100);  //borrar cookie paso 2 (caducarla)  
 // -----------------------------------------------------------------------------------------------------------
 // FICHEROS
 // -----------------------------------------------------------------------------------------------------------
@@ -298,7 +379,7 @@ rmdir('mi_carpeta');          //borrar dir
 // -----------------------------------------------------------------------------------------------------------
 class Coche
 {
-    public const PAGINATE=25; //VARIABLES CONSTANTES
+    public const PAGINATE = 25; //VARIABLES CONSTANTES
     public $marca; //podemos acceder a el desde cualquier lugar
     protected $modelo; //podemos acceder desde la clase que los define y heredados
     private $color; //podemos acceder desde la clase solamente.
@@ -351,7 +432,7 @@ class Ferrari extends Coche
         parent::__construct("verde"); //super en php, llama al constructor de clase padre para heredar
         $this->serie = $serie;
     }
-} 
+}
 
 // -----------------------------------------------------------------------------------------------------------
 // INTERFAZ  (define que métodos va a tener mi clase)(deben ser finas y especificas)
@@ -437,36 +518,139 @@ $coche3 = new Coches();
 $coche3->nombre = 'Ferrari';
 $coche3->MostrarNombre();
 // -----------------------------------------------------------------------------------------------------------
-// BASE DE DATOS
+// BASE DE DATOS 
 // -----------------------------------------------------------------------------------------------------------
 $enlace = mysqli_connect("127.0.0.1", "mi_usuario", "mi_contraseña", "mi_bd");
-$produccion = pg_connect("host=192.168.0.215 port=5432 password=pussycat user=gcagnola dbname=equipamientos");
 if (mysqli_connect_errno()) {   //CHECKEADOR
-    echo "ERROR DE CONEXION";
+    echo "ERROR DE CONEXION: ".mysqli_connect_error() ;
 } else {
     echo "CONEXION REALIZADA";
 }
-// MY SQL
-// $query = mysqli_query($local, "SELECT * FROM TABLA"); //EJECUCION DE QUERY
-// $resultado = mysqli_fetch_assoc($query); //DEVUELVE 1 REGISTRO (OPCION 1)
-// while ($row = mysqli_fetch_assoc($query)) {  //ITERA Y DEVUELVE TODOS LOS REGISTROS
-//     echo $row['descripcion'];
-//     echo $row['nombre'];
-// }
-// $insert = mysqli_query($local, "INSERT INTO tabla(a,b,c,d)"); //EJECUCION DE QUERY
-
-// PG ADMIN
-$query = pg_query($local, "SELECT * FROM TABLA"); //EJECUCION DE QUERY
-$resultado = pg_fetch_array($query); //DEVUELVE 1 REGISTRO (OPCION 1)
-while ($row = pg_fetch_array($query)) {  //ITERA Y DEVUELVE TODOS LOS REGISTROS
+// select
+$query = mysqli_query($local, "SELECT * FROM TABLA"); //EJECUCION DE QUERY
+$resultado = mysqli_fetch_assoc($query); //DEVUELVE 1 REGISTRO (OPCION 1)
+while ($row = mysqli_fetch_assoc($query)) {  //ITERA Y DEVUELVE TODOS LOS REGISTROS
     echo $row['descripcion'];
     echo $row['nombre'];
 }
-// validador
-if (pg_num_rows($query) > 0) {  //muestra la cantidad de espacios que tiene ocupados una query
-    echo "DATOS INTRODUCIDOS CORRECTAMENTE";
-} else {
-    echo "ERROR " . mysqli_error($conexion); //muestra el error
+// insert
+$insert = mysqli_query($local, "INSERT INTO tabla(a,b,c,d)"); //EJECUCION DE QUERY
+// -----------------------------------------------------------------------------------------------------------
+// BASE DE DATOS POO https://platzi.com/clases/4228-php-sql/54838-refactor-de-la-conexion-con-clases/
+// -----------------------------------------------------------------------------------------------------------
+use Doctrine\DBAL\Configuration;
+class Conexion extends Configuration {
+  private static $instancia;
+  private $conexion;
+
+  private function __construct()
+  {
+    $this->crear_conexion();
+  }
+
+    //crea la instancia 
+  public static function getInstancia()
+  {
+    if (!self::$instancia instanceof self)
+      self::$instancia = new self();
+    return self::$instancia;
+  }
+
+  private function crear_conexion()
+  {
+    $mysqli = new \mysqli($this->server, $this->user, $this->pass, $this->db, $this->port);
+    $this->validar_conexion($mysqli);
+    $this->set_names($mysqli);
+    $this->conexion = $mysqli;
+  }
+  
+  private function set_names($mysqli)
+  {
+    $setnames = $mysqli->prepare("SET NAMES 'utf8'");
+    $setnames->execute();
+  }
+
+  private function validar_conexion(&$mysqli)
+  {
+    if ($mysqli->connect_errno)
+      die("Falló la conexión: {$mysqli->connect_error}");
+  }
+
+  public function get_database_conexion()
+  {
+    return $this->conexion;
+  }
+}
+
+class IncomesController {
+
+    private $connection;
+    
+    public function __construct() {
+        $this->connection = Conexion::getInstancia()->get_database_conexion();
+    }
+
+    public function index() {
+
+        $stmt = $this->connection->prepare("SELECT * FROM incomes");
+        $stmt->execute();
+        // opcion 1
+        $results = $stmt->fetchAll();
+        // opcion 2
+        $amount = 0;$description = 0;
+        $stmt->bindColumn('amount',$amount);
+        $stmt->bindColumn('description',$description);
+        while($stmt->fetch()){
+            echo "Gastaste $amount USD en: $description\n";
+        }
+    }
+
+    public function store($data) {
+
+        $stmt = $this->connection->prepare("INSERT INTO incomes (payment_method, type, date, amount, description) VALUES (:payment_method, :type, :date, :amount, :description)");
+
+        $stmt->bindValue(":payment_method", $data["payment_method"]);
+        $stmt->bindValue(":type", $data["type"]);
+        $stmt->bindValue(":date", $data["date"]);
+        $stmt->bindValue(":amount", $data["amount"]);
+        $stmt->bindValue(":description", $data["description"]);
+        $stmt->execute();
+    }
+
+    public function show($id) {
+        $stmt = $this->connection->prepare("SELECT * FROM incomes WHERE id=:id;");
+        $stmt->execute([
+            ":id" => $id
+        ]);
+    }
+    
+    public function update($data, $id) {
+
+        $stmt = $this->connection->prepare("UPDATE incomes SET 
+            payment_method = :payment_method, 
+            type = :type, 
+            date = :date, 
+            amount = :amount, 
+            description = :description
+        WHERE id=:id;");
+
+        $stmt->execute([
+            ":id" => $id,
+            ":payment_method" => $data["payment_method"],
+            ":type" => $data["type"],
+            ":date" => $data["date"],
+            ":amount" => $data["amount"],
+            ":description" => $data["description"],
+        ]);
+
+    }
+    public function destroy($id) {
+        $stmt = $this->connection->prepare("DELETE FROM incomes WHERE id = :id");
+        $stmt->execute([
+            ":id" => $id
+        ]);
+    }
+    
 }
 // -----------------------------------------------------------------------------------------------------------
 // INCLUDE AUTOLOAD
@@ -520,7 +704,7 @@ function test_password()
 {
     // $password = Validate::password('1234567');
     // $this->assertTrue($password);
-} 
+}
 // -----------------------------------------------------------------------------------------------------------
 // FORMULARIO GET Y POST
 // -----------------------------------------------------------------------------------------------------------
@@ -606,7 +790,7 @@ switch ($page) {
     case 'services':
         require("pages/services.php");
         break;
-    deafult:
+        deafult:
         require("pages/404.php");
         break;
 }
