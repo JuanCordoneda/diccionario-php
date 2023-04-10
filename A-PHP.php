@@ -4,8 +4,9 @@
 // -----------------------------------------------------------------------------------------------------------
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL); //CON WARNING
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING | E_DEPRECATED)); //SIN WARNING
+error_reporting(E_ALL); //CON WARNING
+
 // -----------------------------------------------------------------------------------------------------------
 // HEADER (envia informacion extra en encabezado)(redirecciona, autenticaciones, cookies, cache)(viaja por detras del servidor)
 //         https://platzi.com/clases/3151-php-entornos-funciones/49809-redirecciones/
