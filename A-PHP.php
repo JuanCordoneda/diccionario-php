@@ -83,6 +83,7 @@ array_diff_assoc($array1, $array2); //compara 2 arrays y muestra las diferencias
 array_merge($array1, $array2); //une, junta los arrays sin indice
 array_merge_recursive($array1, $array2); //une, junta 2 arrays con indice en uno mismo
 array_combine($indice, $key); //une, junta 2 arrays en un array bidimiencional array1=indice array2=key.
+$array = array_filter($array, function ($row){ return $row["months"] >= 15;}); // array_filter ejecuta una funcion sobre cada elemento del arreglo, si es false lo descarta
 
 $array = array("Batman", "Superman", "HULK");
 $array2 = ["Batman", "Superman", "HULK"];
@@ -109,8 +110,8 @@ $ArrayMultiDimensional = array(
     )
 );
 echo $ArrayMultiDimensional[1]['nombre']; //Juan Cruz
-
-for ($x = 0; $x < count($lista); $x++) {    //iterador
+//iteradores
+for ($x = 0; $x < count($lista); $x++) {
     echo $lista[$x] . "<br>";
 }
 
@@ -119,10 +120,10 @@ foreach ($lista as &$value) {
 }
 
 $i = 0;
-while($i < count($users)) //iterador
+while ($i < count($users)) //iterador
 {
-	echo $users[$i]."\n";
-	$i++;
+    echo $users[$i] . "\n";
+    $i++;
 }
 // -----------------------------------------------------------------------------------------------------------
 // fecha
@@ -266,7 +267,7 @@ try {
 // FUNCIONES
 // -----------------------------------------------------------------------------------------------------------
 $frase = "esta frase es global, pero no se ejecuta dentro de la funcion $name";
-function param(int $p1, bool $p2 = true, array $p3 = array(23, 32)):string
+function param(int $p1, bool $p2 = true, array $p3 = array(23, 32)): string
 {
     global $frase;  //la trae del global
     return 'AHORA SI:' . $frase;
@@ -306,11 +307,11 @@ echo saludar($es, "Lynda");
 // FUNCIONES ARROW https://platzi.com/clases/3151-php-entornos-funciones/49760-arrow-functions/
 // -----------------------------------------------------------------------------------------------------------
 $cajero = 10;
-$add_cajero = fn($add) => $cajero + $add;
+$add_cajero = fn ($add) => $cajero + $add;
 echo $add_cajero(20);
 
 $where_am_i = "México";
-$change_where_am_i = fn(&$where_am_i) => $where_am_i = "Colombia";
+$change_where_am_i = fn (&$where_am_i) => $where_am_i = "Colombia";
 $change_where_am_i($where_am_i);
 echo $where_am_i; // Colombia
 // -----------------------------------------------------------------------------------------------------------
@@ -501,8 +502,9 @@ class Intel extends Ordenador
     }
 }
 // -----------------------------------------------------------------------------------------------------------
-// TRAIT (clases con siertos metodos que podemos utilzar en otras clases)(plantilla de clases)
+// TRAIT (clases con siertos metodos que podemos utilzar en otras clases, hace que se puedan meter mas de 1)(plantilla de clases)
 //        https://platzi.com/clases/3144-php-cookies-sesiones/49711-traits/
+//        https://platzi.com/clases/1462-php-avanzado/16210-traits6325/
 // -----------------------------------------------------------------------------------------------------------
 trait Utilidades
 {
@@ -524,7 +526,7 @@ $coche3->MostrarNombre();
 // -----------------------------------------------------------------------------------------------------------
 $enlace = mysqli_connect("127.0.0.1", "mi_usuario", "mi_contraseña", "mi_bd");
 if (mysqli_connect_errno()) {   //CHECKEADOR
-    echo "ERROR DE CONEXION: ".mysqli_connect_error() ;
+    echo "ERROR DE CONEXION: " . mysqli_connect_error();
 } else {
     echo "CONEXION REALIZADA";
 }
@@ -540,74 +542,79 @@ $insert = mysqli_query($local, "INSERT INTO tabla(a,b,c,d)"); //EJECUCION DE QUE
 // -----------------------------------------------------------------------------------------------------------
 // BASE DE DATOS POO https://platzi.com/clases/4228-php-sql/54838-refactor-de-la-conexion-con-clases/
 // -----------------------------------------------------------------------------------------------------------
-use Doctrine\DBAL\Configuration;
-class Conexion extends Configuration {
-  private static $instancia;
-  private $conexion;
+class Conexion
+{
+    private static $instancia;
+    private $conexion;
 
-  private function __construct()
-  {
-    $this->crear_conexion();
-  }
+    private function __construct()
+    {
+        $this->crear_conexion();
+    }
 
     //crea la instancia 
-  public static function getInstancia()
-  {
-    if (!self::$instancia instanceof self)
-      self::$instancia = new self();
-    return self::$instancia;
-  }
+    public static function getInstancia()
+    {
+        if (!self::$instancia instanceof self)
+            self::$instancia = new self();
+        return self::$instancia;
+    }
 
-  private function crear_conexion()
-  {
-    $mysqli = new \mysqli($this->server, $this->user, $this->pass, $this->db, $this->port);
-    $this->validar_conexion($mysqli);
-    $this->set_names($mysqli);
-    $this->conexion = $mysqli;
-  }
-  
-  private function set_names($mysqli)
-  {
-    $setnames = $mysqli->prepare("SET NAMES 'utf8'");
-    $setnames->execute();
-  }
+    private function crear_conexion()
+    {
+        $mysqli = new \mysqli($this->server, $this->user, $this->pass, $this->db, $this->port);
+        $this->validar_conexion($mysqli);
+        $this->set_names($mysqli);
+        $this->conexion = $mysqli;
+    }
 
-  private function validar_conexion(&$mysqli)
-  {
-    if ($mysqli->connect_errno)
-      die("Falló la conexión: {$mysqli->connect_error}");
-  }
+    private function set_names($mysqli)
+    {
+        $setnames = $mysqli->prepare("SET NAMES 'utf8'");
+        $setnames->execute();
+    }
 
-  public function get_database_conexion()
-  {
-    return $this->conexion;
-  }
+    private function validar_conexion(&$mysqli)
+    {
+        if ($mysqli->connect_errno)
+            die("Falló la conexión: {$mysqli->connect_error}");
+    }
+
+    public function get_database_conexion()
+    {
+        return $this->conexion;
+    }
 }
 
-class IncomesController {
+class IncomesController
+{
 
     private $connection;
-    
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->connection = Conexion::getInstancia()->get_database_conexion();
     }
 
-    public function index() {
+    public function index()
+    {
 
         $stmt = $this->connection->prepare("SELECT * FROM incomes");
         $stmt->execute();
         // opcion 1
         $results = $stmt->fetchAll();
         // opcion 2
-        $amount = 0;$description = 0;
-        $stmt->bindColumn('amount',$amount);
-        $stmt->bindColumn('description',$description);
-        while($stmt->fetch()){
+        $amount = 0;
+        $description = 0;
+        $stmt->bindColumn('amount', $amount);
+        $stmt->bindColumn('description', $description);
+        while ($stmt->fetch()) {
             echo "Gastaste $amount USD en: $description\n";
         }
     }
 
-    public function store($data) {
+    public function store($data)
+    {
 
         $stmt = $this->connection->prepare("INSERT INTO incomes (payment_method, type, date, amount, description) VALUES (:payment_method, :type, :date, :amount, :description)");
 
@@ -619,14 +626,16 @@ class IncomesController {
         $stmt->execute();
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $stmt = $this->connection->prepare("SELECT * FROM incomes WHERE id=:id;");
         $stmt->execute([
             ":id" => $id
         ]);
     }
-    
-    public function update($data, $id) {
+
+    public function update($data, $id)
+    {
 
         $stmt = $this->connection->prepare("UPDATE incomes SET 
             payment_method = :payment_method, 
@@ -644,15 +653,14 @@ class IncomesController {
             ":amount" => $data["amount"],
             ":description" => $data["description"],
         ]);
-
     }
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $stmt = $this->connection->prepare("DELETE FROM incomes WHERE id = :id");
         $stmt->execute([
             ":id" => $id
         ]);
     }
-    
 }
 // -----------------------------------------------------------------------------------------------------------
 // INCLUDE AUTOLOAD
@@ -689,7 +697,7 @@ echo "jaz";
 echo "jaz";
 echo "jaz";
 marca:
-echo "Me saltié 4 modelos ";
+echo "Me saltié 4 echo ";
 // -----------------------------------------------------------------------------------------------------------
 // PHP UNIT 
 // -----------------------------------------------------------------------------------------------------------
